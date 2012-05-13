@@ -112,37 +112,54 @@ public class chessboard extends JPanel{
 	public boolean checkValidMove(Piece piece, Square square){
 		switch (piece.type){
 		case Piece.PAWN:
-			if (piece.square.getColumn() == square.getColumn()){
-				if (piece.color == Piece.WHITE){
-					if (piece.square.getRow() == 2){
-						if (square.getRow() == 3 || square.getRow() == 4)
+			if (piece.color == Piece.WHITE){
+				if (piece.square.getRow() == 2){
+					if (square.getRow() == 3 || square.getRow() == 4)
+						if (piece.square.getColumn() == square.getColumn())
 							return true;
 						else
-							return false;
-					}
+							if (Math.abs(piece.square.getColumn() - square.getColumn()) == 1
+							&& square.piece != null)
+								if (square.piece.color != piece.color)
+									return true;
+								else
+									return false;
+							else
+								return false;
+					else
+						return false;
+				}
 				else{
 					if (square.getRow() == piece.square.getRow() + 1)
+						if (piece.square.getColumn() == square.getColumn())
+							return true;
+						else
+							if (Math.abs(piece.square.getColumn() - square.getColumn()) == 1
+							&& square.piece != null)
+								if (square.piece.color != piece.color)
+									return true;
+								else
+									return false;
+							else
+								return false;
+					else
+						return false;
+				}
+			}
+			else{
+				if (piece.square.getRow() == 7){
+					if (square.getRow() == 6 || square.getRow() == 5)
 						return true;
 					else
 						return false;
-					}
 				}
 				else{
-					if (piece.square.getRow() == 7){
-						if (square.getRow() == 6 || square.getRow() == 5)
-							return true;
-						else
-							return false;
-					}
-					else{
-						if (square.getRow() == piece.square.getRow() - 1)
-							return true;
-						else
-							return false;
-					}
+					if (square.getRow() == piece.square.getRow() - 1)
+						return true;
+					else
+						return false;
 				}
 			}
-				
 		case Piece.KNIGHT:
 			if ((Math.abs(piece.square.getRow() - square.getRow())
 			  + Math.abs(piece.square.getColumn() - square.getColumn()) == 3)
