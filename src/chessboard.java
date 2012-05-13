@@ -71,23 +71,27 @@ public class chessboard extends JPanel{
 	}
 	
 	public void movePiece(Piece piece, int column, int row){
-		Square oldSquare = piece.square;
-		piece.square.piece = null;
-		piece.square = center.squares[column - 1][row - 1];
-		if (piece.square.piece != null){
-			if (piece.square.piece.color == piece.color){
-				piece.square = oldSquare;
+		if (checkValidMove(piece, center.squares[column - 1][row - 1])){
+			Square oldSquare = piece.square;
+			piece.square.piece = null;
+			piece.square = center.squares[column - 1][row - 1];
+			if (piece.square.piece != null){
+				if (piece.square.piece.color == piece.color){
+					piece.square = oldSquare;
+					piece.square.piece = piece;
+					piece.setLocation(piece.square.getPoint());
+				}
+				else
+					capture(piece, piece.square.piece);
+			}
+			else{
 				piece.square.piece = piece;
 				piece.setLocation(piece.square.getPoint());
+				center.frame.repaint();
 			}
-			else
-				capture(piece, piece.square.piece);
 		}
-		else{
-			piece.square.piece = piece;
+		else
 			piece.setLocation(piece.square.getPoint());
-			center.frame.repaint();
-		}
 	}
 	
 	public static Square getSquare(Point p){
@@ -103,5 +107,79 @@ public class chessboard extends JPanel{
 		winner.square.piece = winner;
 		winner.setLocation(winner.square.getPoint());
 		center.frame.repaint();
+	}
+	
+	public boolean checkValidMove(Piece piece, Square square){
+		switch (piece.type){
+		case Piece.PAWN:
+			if (piece.square.getColumn() == square.getColumn()){
+				if (piece.color == Piece.WHITE){
+					if (piece.square.getRow() == 2){
+						if (square.getRow() == 3 || square.getRow() == 4)
+							return true;
+						else
+							return false;
+					}
+				else{
+					if (square.getRow() == piece.square.getRow() + 1)
+						return true;
+					else
+						return false;
+					}
+				}
+				else{
+					if (piece.square.getRow() == 7){
+						if (square.getRow() == 6 || square.getRow() == 5)
+							return true;
+						else
+							return false;
+					}
+					else{
+						if (square.getRow() == piece.square.getRow() - 1)
+							return true;
+						else
+							return false;
+					}
+				}
+			}
+				
+		case Piece.KNIGHT:
+			if ((Math.abs(piece.square.getRow() - square.getRow())
+			  + Math.abs(piece.square.getColumn() - square.getColumn()) == 3)
+			  && piece.square.getRow() != square.getRow()
+			  && piece.square.getColumn() != square.getColumn())
+				return true;
+			else
+				return false;
+		case Piece.BISHOP:
+			if (Math.abs(piece.square.getRow() - square.getRow()) == 
+				Math.abs(piece.square.getColumn() - square.getColumn()))
+				return true;
+			else
+				return false;
+		case Piece.ROOK:
+			if (piece.square.getRow() == square.getRow() || 
+			piece.square.getColumn() == square.getColumn())
+				return true;
+			else
+				return false;
+		case Piece.QUEEN:
+			if (piece.square.getRow() == square.getRow() || 
+			piece.square.getColumn() == square.getColumn())
+				return true;
+			else
+				if (Math.abs(piece.square.getRow() - square.getRow()) == 
+				Math.abs(piece.square.getColumn() - square.getColumn()))
+					return true;
+				else
+					return false;
+		case Piece.KING:
+			if (Math.abs(piece.square.getRow() - square.getRow()) <= 1
+			&& Math.abs(piece.square.getColumn() - square.getColumn()) <= 1)
+				return true;
+			else
+				return false;
+		}
+		return false;
 	}
 }
