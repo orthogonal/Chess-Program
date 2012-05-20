@@ -6,6 +6,10 @@ import java.awt.event.MouseMotionAdapter;
 
 public class chessboard extends JPanel{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static boolean pickedUp = false;
 	private static Piece pickedUpPiece = null;
 	
@@ -70,8 +74,11 @@ public class chessboard extends JPanel{
 	}
 	
 	public void movePiece(Piece piece, int column, int row){
+		Piece oldPiece = center.squares[column - 1][row - 1].piece;
+		Square oldSquare = piece.square;
 		if (checkValidMove(piece, center.squares[column - 1][row - 1])){
-			Square oldSquare = piece.square;
+			piece.square = oldSquare;
+			center.squares[column - 1][row - 1].piece = oldPiece;
 			piece.square.piece = null;
 			piece.square = center.squares[column - 1][row - 1];
 			if (piece.square.piece != null){
@@ -102,6 +109,10 @@ public class chessboard extends JPanel{
 	public void capture(Piece winner, Piece loser){
 		loser.square.piece = null;
 		loser.square = null;
+		if (loser.color == Piece.WHITE)
+			center.whitePieces.remove(loser);
+		else
+			center.blackPieces.remove(loser);
 		remove(loser);
 		winner.square.piece = winner;
 		winner.setLocation(winner.square.getPoint());
@@ -116,9 +127,52 @@ public class chessboard extends JPanel{
 			}
 			System.out.println();
 		}
-		if (piece.available[square.getColumn() - 1][square.getRow() - 1] != 0)
-			return true;
+		if (piece.available[square.getColumn() - 1][square.getRow() - 1] != 0){
+			Square oldSquare = piece.square;
+			Piece oldPiece = square.piece;
+			piece.square = square;
+			square.piece = piece;
+			oldSquare.piece = null;
+			if (finalize(piece.color))
+				return true;
+			else{
+				piece.square.piece = oldPiece;
+				piece.square = oldSquare;
+				oldSquare.piece = piece;
+				finalize(piece.color);
+				return false;
+			}
+		}
 		else
 			return false;
+	}
+	
+	public boolean finalize(int color){
+		center.whitePieces.get(center.whitePieces.indexOf(center.wk)).updateMoves();
+		center.blackPieces.get(center.blackPieces.indexOf(center.bk)).updateMoves();
+		for (int i = 0; i < center.whitePieces.size(); i++){
+			center.whitePieces.get(i).updateMoves();
+		}
+		for (int i = 0; i < center.blackPieces.size(); i++){
+			center.blackPieces.get(i).updateMoves();
+		}
+		if (color == Piece.WHITE){		
+			for (int i = 0; i < center.blackPieces.size(); i++){
+				if (center.blackPieces.get(i).available[center.wk.square.getColumn() - 1][center.wk.square.getRow() - 1] == 2){
+					System.out.println("Illegal move - the king would be in check");
+					return false;
+				}
+			}
+			return true;
+		}
+		else{
+			for (int i = 0; i < center.whitePieces.size(); i++){
+				if (center.whitePieces.get(i).available[center.bk.square.getColumn() - 1][center.bk.square.getRow() - 1] == 2){
+					System.out.println("Illegal move - the king would be in check");
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 }

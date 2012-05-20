@@ -1,13 +1,15 @@
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.io.File;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.LinkedList;
 
 import javax.swing.*;
 
 public class center extends JFrame{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static String bpawn = "images/bpawn.png";
 	private static String wpawn = "images/wpawn.png";
 	private static String bknight = "images/bknight.png";
@@ -106,6 +108,43 @@ public class center extends JFrame{
 			{g1, g2, g3, g4, g5, g6, g7, g8},
 			{h1, h2, h3, h4, h5, h6, h7, h8}
 	};
+
+	public static LinkedList<Piece> blackPieces = new LinkedList<Piece>();
+	public static LinkedList<Piece> whitePieces = new LinkedList<Piece>();
+	
+	public static Piece wp1 = new Piece(wpawn, a2);
+	public static Piece wp2 = new Piece(wpawn, b2);
+	public static Piece wp3 = new Piece(wpawn, c2);
+	public static Piece wp4 = new Piece(wpawn, d2);
+	public static Piece wp5 = new Piece(wpawn, e2);
+	public static Piece wp6 = new Piece(wpawn, f2);
+	public static Piece wp7 = new Piece(wpawn, g2);
+	public static Piece wp8 = new Piece(wpawn, h2);
+	public static Piece wr1 = new Piece(wrook, a1);
+	public static Piece wr2 = new Piece(wrook, h1);
+	public static Piece wn1 = new Piece(wknight, b1);
+	public static Piece wn2 = new Piece(wknight, g1);
+	public static Piece wb1 = new Piece(wbishop, c1);
+	public static Piece wb2 = new Piece(wbishop, f1);
+	public static Piece wq = new Piece(wqueen, d1);
+	public static Piece wk = new Piece(wking, e1);
+	
+	public static Piece bp1 = new Piece(bpawn, a7);
+	public static Piece bp2 = new Piece(bpawn, b7);
+	public static Piece bp3 = new Piece(bpawn, c7);
+	public static Piece bp4 = new Piece(bpawn, d7);
+	public static Piece bp5 = new Piece(bpawn, e7);
+	public static Piece bp6 = new Piece(bpawn, f7);
+	public static Piece bp7 = new Piece(bpawn, g7);
+	public static Piece bp8 = new Piece(bpawn, h7);
+	public static Piece br1 = new Piece(brook, a8);
+	public static Piece br2 = new Piece(brook, h8);
+	public static Piece bn1 = new Piece(bknight, b8);
+	public static Piece bn2 = new Piece(bknight, g8);
+	public static Piece bb1 = new Piece(bbishop, c8);
+	public static Piece bb2 = new Piece(bbishop, f8);
+	public static Piece bq = new Piece(bqueen, d8);
+	public static Piece bk = new Piece(bking, e8);
 	
 	public static void main(String[] args){
 		frame.setTitle("Test");
@@ -117,41 +156,7 @@ public class center extends JFrame{
 		board.setSize(320, 320);
 		frame.setSize(340, 340);
 		board.setLocation(0, 0);
-		
-		Piece wp1 = new Piece(wpawn, a2);
-		Piece wp2 = new Piece(wpawn, b2);
-		Piece wp3 = new Piece(wpawn, c2);
-		Piece wp4 = new Piece(wpawn, d2);
-		Piece wp5 = new Piece(wpawn, e2);
-		Piece wp6 = new Piece(wpawn, f2);
-		Piece wp7 = new Piece(wpawn, g2);
-		Piece wp8 = new Piece(wpawn, h2);
-		Piece wr1 = new Piece(wrook, a1);
-		Piece wr2 = new Piece(wrook, h1);
-		Piece wn1 = new Piece(wknight, b1);
-		Piece wn2 = new Piece(wknight, g1);
-		Piece wb1 = new Piece(wbishop, c1);
-		Piece wb2 = new Piece(wbishop, f1);
-		Piece wq = new Piece(wqueen, d1);
-		Piece wk = new Piece(wking, e1);
-		
-		Piece bp1 = new Piece(bpawn, a7);
-		Piece bp2 = new Piece(bpawn, b7);
-		Piece bp3 = new Piece(bpawn, c7);
-		Piece bp4 = new Piece(bpawn, d7);
-		Piece bp5 = new Piece(bpawn, e7);
-		Piece bp6 = new Piece(bpawn, f7);
-		Piece bp7 = new Piece(bpawn, g7);
-		Piece bp8 = new Piece(bpawn, h7);
-		Piece br1 = new Piece(brook, a8);
-		Piece br2 = new Piece(brook, h8);
-		Piece bn1 = new Piece(bknight, b8);
-		Piece bn2 = new Piece(bknight, g8);
-		Piece bb1 = new Piece(bbishop, c8);
-		Piece bb2 = new Piece(bbishop, f8);
-		Piece bq = new Piece(bqueen, d8);
-		Piece bk = new Piece(bking, e8);
-		
+	
 		
 		board.add(wp1);
 		board.add(wp2);
@@ -221,9 +226,80 @@ public class center extends JFrame{
 		bb2.setLocation(bb2.square.getPoint());
 		bq.setLocation(bq.square.getPoint());
 		bk.setLocation(bk.square.getPoint());
+		
+		whitePieces.add(wp1);
+		whitePieces.add(wp2);
+		whitePieces.add(wp3);
+		whitePieces.add(wp4);
+		whitePieces.add(wp5);
+		whitePieces.add(wp6);
+		whitePieces.add(wp7);
+		whitePieces.add(wp8);
+		whitePieces.add(wr1);
+		whitePieces.add(wr2);
+		whitePieces.add(wn1);
+		whitePieces.add(wn2);
+		whitePieces.add(wb1);
+		whitePieces.add(wb2);
+		whitePieces.add(wq);
+		whitePieces.add(wk);
+		
+		blackPieces.add(bp1);
+		blackPieces.add(bp2);
+		blackPieces.add(bp3);
+		blackPieces.add(bp4);
+		blackPieces.add(bp5);
+		blackPieces.add(bp6);
+		blackPieces.add(bp7);
+		blackPieces.add(bp8);
+		blackPieces.add(br1);
+		blackPieces.add(br2);
+		blackPieces.add(bn1);
+		blackPieces.add(bn2);
+		blackPieces.add(bb1);
+		blackPieces.add(bb2);
+		blackPieces.add(bq);
+		blackPieces.add(bk);
 
 		frame.add(board);
 		frame.repaint();
+		frame.addComponentListener(new ComponentAdapter(){
+				public void componentResized(ComponentEvent evt){
+					wp1.setLocation(wp1.square.getPoint());
+					wp2.setLocation(wp2.square.getPoint());
+					wp3.setLocation(wp3.square.getPoint());
+					wp4.setLocation(wp4.square.getPoint());
+					wp5.setLocation(wp5.square.getPoint());
+					wp6.setLocation(wp6.square.getPoint());
+					wp7.setLocation(wp7.square.getPoint());
+					wp8.setLocation(wp8.square.getPoint());
+					wr1.setLocation(wr1.square.getPoint());
+					wr2.setLocation(wr2.square.getPoint());
+					wn1.setLocation(wn1.square.getPoint());
+					wn2.setLocation(wn2.square.getPoint());
+					wb1.setLocation(wb1.square.getPoint());
+					wb2.setLocation(wb2.square.getPoint());
+					wq.setLocation(wq.square.getPoint());
+					wk.setLocation(wk.square.getPoint());
+					
+					bp1.setLocation(bp1.square.getPoint());
+					bp2.setLocation(bp2.square.getPoint());
+					bp3.setLocation(bp3.square.getPoint());
+					bp4.setLocation(bp4.square.getPoint());
+					bp5.setLocation(bp5.square.getPoint());
+					bp6.setLocation(bp6.square.getPoint());
+					bp7.setLocation(bp7.square.getPoint());
+					bp8.setLocation(bp8.square.getPoint());
+					br1.setLocation(br1.square.getPoint());
+					br2.setLocation(br2.square.getPoint());
+					bn1.setLocation(bn1.square.getPoint());
+					bn2.setLocation(bn2.square.getPoint());
+					bb1.setLocation(bb1.square.getPoint());
+					bb2.setLocation(bb2.square.getPoint());
+					bq.setLocation(bq.square.getPoint());
+					bk.setLocation(bk.square.getPoint());
+				}
+			});
 	}
 	
 	public center(){

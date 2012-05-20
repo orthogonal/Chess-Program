@@ -1,9 +1,11 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
 public class Piece extends JLabel{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int WHITE = 0;
 	public static final int BLACK = 1;
 	
@@ -19,8 +21,6 @@ public class Piece extends JLabel{
 	
 	public ImageIcon picture;
 	
-	private boolean pickedUp = false;
-	
 	public static final int NO_MOVE = 0;
 	public static final int MOVE_ONLY = 1;
 	public static final int CAPTURE = 2;
@@ -35,29 +35,29 @@ public class Piece extends JLabel{
 		char type = end.charAt(1);
 		
 		if (color == 'w')
-			this.color = this.WHITE;
+			this.color = Piece.WHITE;
 		else
-			this.color = this.BLACK;
+			this.color = Piece.BLACK;
 		
 		switch(type){
 		case 'p':
-			this.type = this.PAWN;
+			this.type = Piece.PAWN;
 			break;
 		case 'k':
 			char nork = end.charAt(2);		//nork checks for knight or king.
 			if (nork == 'n')
-				this.type = this.KNIGHT;
+				this.type = Piece.KNIGHT;
 			else
-				this.type = this.KING;
+				this.type = Piece.KING;
 			break;
 		case 'b':
-			this.type = this.BISHOP;
+			this.type = Piece.BISHOP;
 			break;
 		case 'r':
-			this.type = this.ROOK;
+			this.type = Piece.ROOK;
 			break;
 		case 'q':
-			this.type = this.QUEEN;
+			this.type = Piece.QUEEN;
 			break;
 		}
 		
