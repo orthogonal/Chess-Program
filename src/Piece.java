@@ -18,13 +18,14 @@ public class Piece extends JLabel{
 	
 	public int type;
 	public int color;
+	public boolean hasMoved;
 	
 	public ImageIcon picture;
 	
 	public static final int NO_MOVE = 0;
 	public static final int MOVE_ONLY = 1;
 	public static final int CAPTURE = 2;
-	public int[][] available = new int[8][8];		//0 = can't, 1 = move but not capture (pawn), 2 = capture/move
+	public int[][] available = new int[8][8];		//0 = can't, 1 = move but not capture (pawn), 2 = capture/move, 3 = 0-0, 4 = 0-0-0
 	
 	
 	Square square;
@@ -33,6 +34,8 @@ public class Piece extends JLabel{
 		String end = src.substring(7);	//Assuming images/ folder is the first part of the path.
 		char color = end.charAt(0);
 		char type = end.charAt(1);
+		
+		this.hasMoved = false;
 		
 		if (color == 'w')
 			this.color = Piece.WHITE;
@@ -548,6 +551,17 @@ public class Piece extends JLabel{
 							this.available[col - 1][row - 1] = Piece.NO_MOVE;
 					}
 				}
+			}
+			if (this.color == Piece.WHITE && !center.wk.hasMoved){
+				if (!center.wr1.hasMoved && center.squares[5][0].piece == null && center.squares[6][0].piece == null)
+					this.available[6][0] = 3;
+				if (!center.wr2.hasMoved && center.squares[3][0].piece == null && center.squares[2][0].piece == null)
+					this.available[2][0] = 4;
+			} else if (this.color == Piece.BLACK && !center.bk.hasMoved){
+				if (!center.br1.hasMoved && center.squares[5][7].piece == null && center.squares[6][7].piece == null)
+					this.available[6][7] = 3;
+				if (!center.br2.hasMoved && center.squares[3][7].piece == null && center.squares[2][7].piece == null)
+					this.available[2][7] = 4;
 			}
 		}
 	}

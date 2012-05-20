@@ -154,7 +154,7 @@ public class center extends JFrame{
 		
 		JPanel board = new chessboard();
 		board.setSize(320, 320);
-		frame.setSize(340, 340);
+		frame.setSize(400, 340);
 		board.setLocation(0, 0);
 	
 		

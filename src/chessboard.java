@@ -92,6 +92,7 @@ public class chessboard extends JPanel{
 					piece.square = oldSquare;
 					piece.square.piece = piece;
 					piece.setLocation(piece.square.getPoint());
+					piece.hasMoved = false;
 				}
 				else											//If it's a piece of a different color, capture it.
 					capture(piece, piece.square.piece);
@@ -99,6 +100,41 @@ public class chessboard extends JPanel{
 			else{												//If the square is unoccupied, move there.
 				piece.square.piece = piece;
 				piece.setLocation(piece.square.getPoint());
+				if (!piece.hasMoved && piece.type == Piece.KING && (piece.square.getColumn() == 7 || piece.square.getColumn() == 3)){
+					if (piece.square.getColumn() == 3){			//Queenside Castle
+						if (piece.color == Piece.WHITE){
+							center.wr1.square.piece = null;
+							center.wr1.square = center.squares[3][0];
+							center.wr1.square.piece = center.wr1;
+							center.wr1.hasMoved = true;
+							center.wr1.setLocation(center.wr1.square.getPoint());
+						}
+						else if (piece.color == Piece.BLACK){
+							center.br1.square.piece = null;
+							center.br1.square = center.squares[3][7];
+							center.br1.square.piece = center.br1;
+							center.br1.hasMoved = true;
+							center.br1.setLocation(center.br1.square.getPoint());
+						}
+					}
+					if (piece.square.getColumn() == 7){			//Kingside Castle
+						if (piece.color == Piece.WHITE){
+							center.wr2.square.piece = null;
+							center.wr2.square = center.squares[5][0];
+							center.wr2.square.piece = center.wr2;
+							center.wr2.hasMoved = true;
+							center.wr2.setLocation(center.wr2.square.getPoint());
+						}
+						else if (piece.color == Piece.BLACK){
+							center.br2.square.piece = null;
+							center.br2.square = center.squares[5][7];
+							center.br2.square.piece = center.br2;
+							center.br2.hasMoved = true;
+							center.br2.setLocation(center.br2.square.getPoint());
+						}
+					}
+				}
+				piece.hasMoved = true;
 			}
 		}
 		else
@@ -114,6 +150,7 @@ public class chessboard extends JPanel{
 	}
 	
 	public void capture(Piece winner, Piece loser){
+		winner.hasMoved = true;
 		loser.square.piece = null;
 		loser.square = null;
 		if (loser.color == Piece.WHITE)
@@ -175,10 +212,15 @@ public class chessboard extends JPanel{
 			center.blackPieces.get(i).updateMoves();
 		}
 		
-		/* Check all the squares available to all the enemy pieces.  If any of them matches the king's square, it's an illegal move. */
+		/* Check all the squares available to all the enemy pieces.  If any of them matches the king's square, it's an illegal move. 
+		 * Also, if the player is trying to castle, check the blank square as well as the square he/she is trying to move the king to.*/
 		if (color == Piece.WHITE){		
 			for (int i = 0; i < center.blackPieces.size(); i++){
-				if (center.blackPieces.get(i).available[center.wk.square.getColumn() - 1][center.wk.square.getRow() - 1] == 2){
+				if (center.blackPieces.get(i).available[center.wk.square.getColumn() - 1][center.wk.square.getRow() - 1] == 2
+						|| ((center.wk.available[center.wk.square.getColumn() - 1][center.wk.square.getRow() - 1] == 3)	// If kingside castled
+							&& center.blackPieces.get(i).available[6][0] == 2)
+						|| ((center.wk.available[center.wk.square.getColumn() - 1][center.wk.square.getRow() - 1] == 4)	// If queenside castled
+							&& center.blackPieces.get(i).available[3][0] == 2)){
 					System.out.println("Illegal move - the king would be in check");
 					return false;
 				}
@@ -187,7 +229,11 @@ public class chessboard extends JPanel{
 		}
 		else if (color == Piece.BLACK){
 			for (int i = 0; i < center.whitePieces.size(); i++){
-				if (center.whitePieces.get(i).available[center.bk.square.getColumn() - 1][center.bk.square.getRow() - 1] == 2){
+				if (center.whitePieces.get(i).available[center.bk.square.getColumn() - 1][center.bk.square.getRow() - 1] == 2
+						|| ((center.bk.available[center.bk.square.getColumn() - 1][center.bk.square.getRow() - 1] == 3)	// If kingside castled
+							&& center.whitePieces.get(i).available[6][7] == 2)
+						|| ((center.bk.available[center.bk.square.getColumn() - 1][center.bk.square.getRow() - 1] == 4)	// If queenside castled
+							&& center.whitePieces.get(i).available[3][7] == 2)){
 					System.out.println("Illegal move - the king would be in check");
 					return false;
 				}
