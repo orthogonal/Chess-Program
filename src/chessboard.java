@@ -61,7 +61,6 @@ public class chessboard extends JPanel{
 		addMouseMotionListener(new MouseMotionAdapter(){
 			public void mouseDragged(MouseEvent evt){
 				if (pickedUp){
-					System.out.println(pickedUpPiece.type);
 					if (pickedUpPiece != null){
 						pickedUpPiece.setLocation(evt.getX() - 20, evt.getY() - 20);
 					}
@@ -110,93 +109,16 @@ public class chessboard extends JPanel{
 	}
 	
 	public boolean checkValidMove(Piece piece, Square square){
-		switch (piece.type){
-		case Piece.PAWN:
-			if (piece.color == Piece.WHITE){
-				if (piece.square.getRow() == 2){
-					if (square.getRow() == 3 || square.getRow() == 4)
-						if (piece.square.getColumn() == square.getColumn())
-							return true;
-						else
-							if (Math.abs(piece.square.getColumn() - square.getColumn()) == 1
-							&& square.piece != null)
-								if (square.piece.color != piece.color)
-									return true;
-								else
-									return false;
-							else
-								return false;
-					else
-						return false;
-				}
-				else{
-					if (square.getRow() == piece.square.getRow() + 1)
-						if (piece.square.getColumn() == square.getColumn())
-							return true;
-						else
-							if (Math.abs(piece.square.getColumn() - square.getColumn()) == 1
-							&& square.piece != null)
-								if (square.piece.color != piece.color)
-									return true;
-								else
-									return false;
-							else
-								return false;
-					else
-						return false;
-				}
+		piece.updateMoves();
+		for (int j = 7; j >= 0; j--){
+			for (int i = 0; i < 8; i++){
+				System.out.print(piece.available[i][j] + " ");
 			}
-			else{
-				if (piece.square.getRow() == 7){
-					if (square.getRow() == 6 || square.getRow() == 5)
-						return true;
-					else
-						return false;
-				}
-				else{
-					if (square.getRow() == piece.square.getRow() - 1)
-						return true;
-					else
-						return false;
-				}
-			}
-		case Piece.KNIGHT:
-			if ((Math.abs(piece.square.getRow() - square.getRow())
-			  + Math.abs(piece.square.getColumn() - square.getColumn()) == 3)
-			  && piece.square.getRow() != square.getRow()
-			  && piece.square.getColumn() != square.getColumn())
-				return true;
-			else
-				return false;
-		case Piece.BISHOP:
-			if (Math.abs(piece.square.getRow() - square.getRow()) == 
-				Math.abs(piece.square.getColumn() - square.getColumn()))
-				return true;
-			else
-				return false;
-		case Piece.ROOK:
-			if (piece.square.getRow() == square.getRow() || 
-			piece.square.getColumn() == square.getColumn())
-				return true;
-			else
-				return false;
-		case Piece.QUEEN:
-			if (piece.square.getRow() == square.getRow() || 
-			piece.square.getColumn() == square.getColumn())
-				return true;
-			else
-				if (Math.abs(piece.square.getRow() - square.getRow()) == 
-				Math.abs(piece.square.getColumn() - square.getColumn()))
-					return true;
-				else
-					return false;
-		case Piece.KING:
-			if (Math.abs(piece.square.getRow() - square.getRow()) <= 1
-			&& Math.abs(piece.square.getColumn() - square.getColumn()) <= 1)
-				return true;
-			else
-				return false;
+			System.out.println();
 		}
-		return false;
+		if (piece.available[square.getColumn() - 1][square.getRow() - 1] != 0)
+			return true;
+		else
+			return false;
 	}
 }
