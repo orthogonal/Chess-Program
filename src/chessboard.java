@@ -74,30 +74,37 @@ public class chessboard extends JPanel{
 	}
 	
 	public void movePiece(Piece piece, int column, int row){
+		/*  The piece will be non-physically moved in checkValidMove, so save its old squares */
 		Piece oldPiece = center.squares[column - 1][row - 1].piece;
 		Square oldSquare = piece.square;
-		if (checkValidMove(piece, center.squares[column - 1][row - 1])){
+		
+		if (checkValidMove(piece, center.squares[column - 1][row - 1])){		//If the move is valid
+			/* Put the piece back on its original square, first */
 			piece.square = oldSquare;
 			center.squares[column - 1][row - 1].piece = oldPiece;
+			
+			/* Move it to a new square */
 			piece.square.piece = null;
 			piece.square = center.squares[column - 1][row - 1];
-			if (piece.square.piece != null){
-				if (piece.square.piece.color == piece.color){
+			
+			if (piece.square.piece != null){					//If the square is occupied
+				if (piece.square.piece.color == piece.color){	//If it's a piece of the same color, move back.
 					piece.square = oldSquare;
 					piece.square.piece = piece;
 					piece.setLocation(piece.square.getPoint());
 				}
-				else
+				else											//If it's a piece of a different color, capture it.
 					capture(piece, piece.square.piece);
 			}
-			else{
+			else{												//If the square is unoccupied, move there.
 				piece.square.piece = piece;
 				piece.setLocation(piece.square.getPoint());
-				center.frame.repaint();
 			}
 		}
 		else
-			piece.setLocation(piece.square.getPoint());
+			piece.setLocation(piece.square.getPoint());			//If the move is invalid, draw the piece back on its original square.
+		
+		center.frame.repaint();
 	}
 	
 	public static Square getSquare(Point p){
@@ -120,26 +127,37 @@ public class chessboard extends JPanel{
 	}
 	
 	public boolean checkValidMove(Piece piece, Square square){
+		
+		/*  First, find what squares are available to the piece at this time */
 		piece.updateMoves();
+		
+		/* For testing purposes only:  Draw the board as the piece sees it before moving. */
 		for (int j = 7; j >= 0; j--){
 			for (int i = 0; i < 8; i++){
 				System.out.print(piece.available[i][j] + " ");
 			}
 			System.out.println();
 		}
+		
+		/*  If the piece can go to the square it's trying to go to */
 		if (piece.available[square.getColumn() - 1][square.getRow() - 1] != 0){
+			/*  Save its old location */
 			Square oldSquare = piece.square;
 			Piece oldPiece = square.piece;
+			
+			/* Completely change the board so that it moves it to its new location, ignoring captures */
 			piece.square = square;
 			square.piece = piece;
 			oldSquare.piece = null;
+			
+			/* If this move does not result in your king being in check, finalize everything and we're done */
 			if (finalize(piece.color))
 				return true;
 			else{
-				piece.square.piece = oldPiece;
+				piece.square.piece = oldPiece;		// If the king would be in check, put everything back where it belongs and re-finalize.
 				piece.square = oldSquare;
 				oldSquare.piece = piece;
-				finalize(piece.color);
+				finalize(100);						// Call finalize with a non-color number to avoid looking for checks again.
 				return false;
 			}
 		}
@@ -148,14 +166,16 @@ public class chessboard extends JPanel{
 	}
 	
 	public boolean finalize(int color){
-		center.whitePieces.get(center.whitePieces.indexOf(center.wk)).updateMoves();
-		center.blackPieces.get(center.blackPieces.indexOf(center.bk)).updateMoves();
+		
+		/* Figure out all the squares available to all the pieces now that the move has been made */
 		for (int i = 0; i < center.whitePieces.size(); i++){
 			center.whitePieces.get(i).updateMoves();
 		}
 		for (int i = 0; i < center.blackPieces.size(); i++){
 			center.blackPieces.get(i).updateMoves();
 		}
+		
+		/* Check all the squares available to all the enemy pieces.  If any of them matches the king's square, it's an illegal move. */
 		if (color == Piece.WHITE){		
 			for (int i = 0; i < center.blackPieces.size(); i++){
 				if (center.blackPieces.get(i).available[center.wk.square.getColumn() - 1][center.wk.square.getRow() - 1] == 2){
@@ -165,7 +185,7 @@ public class chessboard extends JPanel{
 			}
 			return true;
 		}
-		else{
+		else if (color == Piece.BLACK){
 			for (int i = 0; i < center.whitePieces.size(); i++){
 				if (center.whitePieces.get(i).available[center.bk.square.getColumn() - 1][center.bk.square.getRow() - 1] == 2){
 					System.out.println("Illegal move - the king would be in check");
@@ -174,5 +194,6 @@ public class chessboard extends JPanel{
 			}
 			return true;
 		}
+		return true;
 	}
 }
